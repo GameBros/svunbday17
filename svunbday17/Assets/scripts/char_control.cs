@@ -10,6 +10,8 @@ public class char_control : MonoBehaviour {
 	float distToGround;
 
 	public float moveSpeed;
+	public float jumpVel;
+	public Transform currentSpawnPoint;
 
 	// Use this for initialization
 	void Start () {
@@ -34,7 +36,7 @@ public class char_control : MonoBehaviour {
 
 		if (Input.GetKeyDown (KeyCode.Space)) {
 			if (isGrounded ()) {
-				rigi.AddForce (Vector3.up * 500f);
+				rigi.AddForce (Vector3.up * jumpVel);
 			}
 		}
 	}
@@ -42,4 +44,22 @@ public class char_control : MonoBehaviour {
 	bool isGrounded(){
 		return Physics.Raycast (trans.position, Vector3.down, distToGround + 1f);
 	}
+
+	void OnCollisionEnter(Collision col){
+		if (col.gameObject.tag == "killing") {
+			respawn();
+		}
+
+	}
+
+	void OnTriggerEnter(Collider col){
+		if (col.gameObject.tag == "Respawn") {
+			currentSpawnPoint = col.transform;
+		}
+	}
+
+	void respawn(){
+		transform.position = currentSpawnPoint.position;
+	}
+
 }
